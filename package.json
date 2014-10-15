@@ -1,0 +1,30 @@
+{
+  "name": "wp2harp",
+  "version": "0.0.1",
+  "description": "Simple migration from WordPress to Harp",
+  "main": "wp2harp.js",
+  "scripts": {
+    "test": "mocha -R spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:peremenov/wp2harp.git"
+  },
+  "keywords": [
+    "wordpress",
+    "harp",
+    "migration",
+    "convert",
+    "xml",
+    "markdown"
+  ],
+  "author": "Kirill Peremenov",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^0.17.0",
+    "commander": "^2.3.0",
+    "fs-extra": "^0.12.0",
+    "html-md": "^3.0.2",
+    "underscore": "^1.7.0"
+  }
+}
