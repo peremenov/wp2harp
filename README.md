@@ -20,6 +20,8 @@ First you need to take out Wordpress XML with:
 * click button `Download export file`
 * save file
 
+Example:
+
 	$ node wp2harp -c -d -s wordpress.2014-10-13.xml -t harpProject/
 	
 	
