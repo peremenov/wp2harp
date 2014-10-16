@@ -2,6 +2,7 @@ var cheerio = require('cheerio')
   , md = require('html-md')
   , fse = require('fs-extra')
   , fs  = require('fs')
+  , querystring = require('querystring')
   , path = p = require('path')
   , url = require('url')
   , _ = require('underscore')
@@ -110,7 +111,7 @@ var Parser = function(opt) {
     .get()
     .map(self.getFilePath.bind(self))
     /**
-     * Wordpress don't use <p>. Replace \n to \n\n for Markdown correct compilation.
+     * Wordpress don't use <p>. Replace \n to \n\n for correct paragraph in Markdown.
      */
     .map(function(item) {
       item.content = item.content.replace("\n", "\n\n");
@@ -125,7 +126,7 @@ var Parser = function(opt) {
     );
   });
 
-  collectMetadata(self.opt.target);
+  collectMetadata(self.opt.target, !self.opt.meta);
   fse.outputFileSync(path.join(self.opt.target, stackPath.post, harpMeta), JSON.stringify({ globals : self.globals }, null, 2));
 
   console.info("%d files added", items.length);
@@ -216,15 +217,28 @@ Parser.prototype = {
     var self = this
       , p = link.replace(self.globals.link, '')
       , splitted = p.split(path.sep)
+      , result = ''
     ;
 
+    // remove heading slash
     if(!splitted[0])
       splitted.shift();
 
+    // remove tailing slash
     if(!splitted[splitted.length-1])
       splitted.pop();
 
-    return splitted.join(path.sep);
+    result = splitted.join(path.sep);
+
+    // if path actualy is query string
+    if(result[0] == '?') {
+      result = result.replace('?', '');
+      result = _.map(querystring.parse(p), function(value, index) {
+        return value;
+      }).join(path.sep);
+    }
+
+    return result;
   },
   /**
    * Returns full path to data file and json file
@@ -294,7 +308,15 @@ var fileWalker = function fileWalker(path, cb) {
 /**
  * Collect all metadata files (<filename>.json) to _data.json
  */
-var collectMetadata = function(target) {
+var collectMetadata = function(target, removeMeta) {
+  /**
+   * Array of complited files to avoid repeat
+   * @type {Array}
+   */
+  var completed = []
+    , removeMeta = !!removeMeta
+  ;
+
   fileWalker(target, function(dir, files) {
     var object = {};
 
@@ -304,11 +326,17 @@ var collectMetadata = function(target) {
       })
       .forEach(function(file) {
         var base = path.basename(file, metaExt);
-        try {
-          object[base] = fse.readJsonSync(file);
-          fse.removeSync(file);
+        if(completed.indexOf(file) == -1) {
+          try {
+            object[base] = fse.readJsonSync(file);
+          }
+          catch(e){}
+
+          if(removeMeta)
+            fse.removeSync(file);
+
+          completed.push(file);
         }
-        catch(e){}
       });
 
     if(!_.isEmpty(object))
