@@ -38,3 +38,8 @@ Example:
 	    -c, --comments       get comments from xml
 	    -d, --drafts         save drafts
 	    -m, --meta           keep metadata in separated .json files
+	    
+### Todo
+
+* fix paragraph migration (Wordpress don’t use `<p>` tag)
+* make metadata assembler as separated component (for single use)

@@ -110,13 +110,6 @@ var Parser = function(opt) {
     })
     .get()
     .map(self.getFilePath.bind(self))
-    /**
-     * Wordpress don't use <p>. Replace \n to \n\n for correct paragraph in Markdown.
-     */
-    .map(function(item) {
-      item.content = item.content.replace("\n", "\n\n");
-      return item;
-    })
   ;
 
   items.forEach(function(item) {
@@ -172,7 +165,7 @@ Parser.prototype = {
       }).get(),
       comments  : self.opt.comments ? self.getItemComments($item.find('wp\\:comment')) : null,
       post_id   : $item.find('wp\\:post_id').text(),
-      post_type : status == 'draft' ? status : post_type
+      post_type : status == 'draft' || status == 'private' ? status : post_type
     }
   },
   /**
