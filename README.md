@@ -41,7 +41,8 @@ Example:
 	    
 ### Todo
 
-* fix paragraph migration (Wordpress don’t use `<p>` tag)
+* fix paragraph migration (Wordpress doesn’t use `<p>` tag)
 * fix index file
 * make metadata assembler as separated component (for single use)
+* add comments tree export
 * add untit tests
