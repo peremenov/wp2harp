@@ -42,4 +42,6 @@ Example:
 ### Todo
 
 * fix paragraph migration (Wordpress don’t use `<p>` tag)
+* fix index file
 * make metadata assembler as separated component (for single use)
+* add untit tests
